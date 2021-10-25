@@ -124,21 +124,26 @@ def generate_time_string(decimal_time):
         time_string = "-" + time_string
     return time_string
 
-DELTA_T_J2000, JDTT = a_days_since_j2000_epoch(947116800000)
-if DEBUG:
-    print("A = ", DELTA_T_J2000)
-Ls, V_minus_M = b_mars_parameters_of_date(DELTA_T_J2000)
-if DEBUG:
-    print("B = ", Ls)
+def main(millis):
+    DELTA_T_J2000, JDTT = a_days_since_j2000_epoch(millis)
+    if DEBUG:
+        print("A = ", DELTA_T_J2000)
+    Ls, V_minus_M = b_mars_parameters_of_date(DELTA_T_J2000)
+    if DEBUG:
+        print("B = ", Ls)
 
-# lambda is the Mars latitude. 0 implies that the location is on the Mars prime meridian.
-LAMBDA = 0
-MST, LMST, LTST, LAMBDAs = c_mars_time(Ls, V_minus_M, JDTT, LAMBDA)
-print("Mean Solar Time at Mars's prime meridian (MST) = ", generate_time_string(MST))
-print("Local Mean Solar Time (LMST) = ", generate_time_string(LMST))
-print("Local True Solar Time (LTST) = ", generate_time_string(LTST))
+    # lambda is the Mars latitude. 0 implies that the location is on the Mars prime meridian.
+    LAMBDA = 0
+    MST, LMST, LTST, LAMBDAs = c_mars_time(Ls, V_minus_M, JDTT, LAMBDA)
+    print("Mean Solar Time at Mars's prime meridian (MST) = ", generate_time_string(MST))
+    print("Local Mean Solar Time (LMST) = ", generate_time_string(LMST))
+    print("Local True Solar Time (LTST) = ", generate_time_string(LTST))
 
-# Marstime from current earth time: 
-# a_days_since_j2000_epoch(time.time_ns() // 1_000_000)
+## Marstime from current earth time: 
+# main(time.time_ns() // 1_000_000)
 
+# Near Coincident Earth and Mars Times
+main(947116800000)
 
+## MER-A Spirit Landing
+# main(1073137591000)
