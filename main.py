@@ -138,8 +138,9 @@ def main(millis, LAMBDA):
     print("Local Mean Solar Time (LMST) = ", generate_time_string(LMST))
     print("Local True Solar Time (LTST) = ", generate_time_string(LTST))
 
-## Marstime from current earth time: 
-# main(time.time_ns() // 1_000_000)
+# Marstime from current earth time: 
+print("Mars time for current earth time at Mars prime meridian 0")
+main(time.time_ns() // 1_000_000, 0)
 
 ## lambda is the Mars latitude. 0 implies that the location is on the Mars prime meridian.
 # LAMBDA = 0
@@ -147,5 +148,5 @@ def main(millis, LAMBDA):
 # main(947116800000, 0)
 
 # MER-A Spirit Landing
-MER_A_LAMBDA_Spirit_Landing = 184.702
-main(1073137591000, MER_A_LAMBDA_Spirit_Landing)
+# MER_A_LAMBDA_Spirit_Landing = 184.702
+# main(1073137591000, MER_A_LAMBDA_Spirit_Landing)
