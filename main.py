@@ -147,5 +147,5 @@ def main(millis, LAMBDA):
 # main(947116800000, 0)
 
 # MER-A Spirit Landing
-LAMBDA_Spirit_Landing = 184.702
-main(1073137591000, LAMBDA_Spirit_Landing)
+MER_A_LAMBDA_Spirit_Landing = 184.702
+main(1073137591000, MER_A_LAMBDA_Spirit_Landing)
