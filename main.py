@@ -119,12 +119,13 @@ def generate_time_string(decimal_time):
     if DEBUG:
         print("Seconds = ", int(seconds))
     time_string = str(hours) + ":" + str(int(minutes)) + ":" + str(int(seconds))
-    sign = decimal_time / hours
-    if sign < 0:
-        time_string = "-" + time_string
+    if (hours > 0):
+        sign = decimal_time / hours
+        if sign < 0:
+            time_string = "-" + time_string
     return time_string
 
-def main(millis):
+def main(millis, LAMBDA):
     DELTA_T_J2000, JDTT = a_days_since_j2000_epoch(millis)
     if DEBUG:
         print("A = ", DELTA_T_J2000)
@@ -132,8 +133,6 @@ def main(millis):
     if DEBUG:
         print("B = ", Ls)
 
-    # lambda is the Mars latitude. 0 implies that the location is on the Mars prime meridian.
-    LAMBDA = 0
     MST, LMST, LTST, LAMBDAs = c_mars_time(Ls, V_minus_M, JDTT, LAMBDA)
     print("Mean Solar Time at Mars's prime meridian (MST) = ", generate_time_string(MST))
     print("Local Mean Solar Time (LMST) = ", generate_time_string(LMST))
@@ -142,8 +141,11 @@ def main(millis):
 ## Marstime from current earth time: 
 # main(time.time_ns() // 1_000_000)
 
-# Near Coincident Earth and Mars Times
-main(947116800000)
+## lambda is the Mars latitude. 0 implies that the location is on the Mars prime meridian.
+# LAMBDA = 0
+## Near Coincident Earth and Mars Times
+# main(947116800000, 0)
 
-## MER-A Spirit Landing
-# main(1073137591000)
+# MER-A Spirit Landing
+LAMBDA_Spirit_Landing = 184.702
+main(1073137591000, LAMBDA_Spirit_Landing)
