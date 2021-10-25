@@ -29,7 +29,7 @@ def a_days_since_j2000_epoch(millis):
     DELTA_T_J2000 = JDTT - 2451545.0
     print("A-6 DELTA_T_J2000 = ", DELTA_T_J2000)
 
-    return DELTA_T_J2000
+    return DELTA_T_J2000, JDTT
 
 def determine_perturbers(DELTA_T_J2000):
     Ai = [0.0071, 0.0057, 0.0039, 0.0037, 0.0021, 0.0020, 0.0018]
@@ -41,10 +41,6 @@ def determine_perturbers(DELTA_T_J2000):
         PBS = PBS + PBSi
     # TODO: Fix this method
     return PBS
-
-def determine_equation_of_center(DELTA_T_J2000, M, PBS):
-    V_minus_M = (10.691 + 3.0 * (10**(-7)) * DELTA_T_J2000) * math.sin(math.radians(M)) + 0.623 * math.sin(math.radians(2 * M)) + 0.050 * math.sin(math.radians(3 * M)) + 0.005 * math.sin(math.radians(4 * M)) + 0.0005 * math.sin(math.radians(5 * M)) + PBS
-    return V_minus_M
 
 def b_mars_parameters_of_date(DELTA_T_J2000):
     # Mars mean anomaly
@@ -60,19 +56,65 @@ def b_mars_parameters_of_date(DELTA_T_J2000):
     print("B-3 PBS = ", PBS)
 
     # Equation of center
-    V_minus_M = determine_equation_of_center(DELTA_T_J2000, M, PBS)
+    V_minus_M = (10.691 + 3.0 * (10**(-7)) * DELTA_T_J2000) * math.sin(math.radians(M)) + 0.623 * math.sin(math.radians(2 * M)) + 0.050 * math.sin(math.radians(3 * M)) + 0.005 * math.sin(math.radians(4 * M)) + 0.0005 * math.sin(math.radians(5 * M)) + PBS
     print("B-4 v - M = ", V_minus_M)
 
     # areocentric solar longitude
     Ls = alfaFMS + (V_minus_M)
     print("B-5 Ls = ", Ls)
 
-    return Ls
+    return Ls, V_minus_M
 
-A = a_days_since_j2000_epoch(947116800000)
-print("A = ", A)
-B = b_mars_parameters_of_date(A)
-print("B = ", B)
+def c_mars_time(Ls, V_minus_M, JDTT, LAMBDA):
+    # Equation of Time
+    EOT = 2.861 * math.sin(math.radians(2 * Ls)) - 0.071 * math.sin(math.radians(4 * Ls)) + 0.002 * math.sin(math.radians(6 * Ls)) - V_minus_M
+    print("C-1 EOT = ", EOT)
+
+    # Mean Solar Time at Mars's prime meridian, i.e., Airy Mean Time
+    MST = ( 24 * ( ((JDTT - 2451549.5) / 1.0274912517) + 44796.0 - 0.0009626 ) ) % 24
+    print("C-2 MST = ", MST)
+
+    # Local Mean Solar Time
+    LMST = ( MST - LAMBDA * (24 / 360) ) % 24 
+    # or LMST = ( MST - lambda (1 / 15) ) % 24
+    print("C-3 LMST = ", LMST)
+
+    # Local True Solar Time
+    LTST = LMST + EOT * (24 / 360) 
+    # or LTST = LMST + EOT * (1 / 15)
+    print("C-4 LTST = ", LTST)
+
+    # Subsolar longitude
+    # Note: The formula published is Λs = MST (360° / 24 h) + EOT + 180° = MST (15° / h) + EOT + 180°, but a (- 180) gave the right answer
+    LAMBDAs = (MST * (360 / 24)) + EOT - 180
+    print("C-5 Λs = ", LAMBDAs)
+
+    return MST, LMST, LTST, LAMBDAs
+
+def generate_time_string(decimal_time):
+    hours = int(decimal_time)
+    print("Hours = ", hours)
+    minutes = (decimal_time - hours) * 60
+    print("Minutes = ", int(minutes))
+    seconds = (minutes - int(minutes)) * 60
+    print("Seconds = ", int(seconds))
+    time_string = str(hours) + ":" + str(int(minutes)) + ":" + str(int(seconds))
+    sign = decimal_time / hours
+    if sign < 0:
+        time_string = "-" + time_string
+    return time_string
+
+DELTA_T_J2000, JDTT = a_days_since_j2000_epoch(947116800000)
+print("A = ", DELTA_T_J2000)
+Ls, V_minus_M = b_mars_parameters_of_date(DELTA_T_J2000)
+print("B = ", Ls)
+
+# lambda is the Mars latitude. 0 implies that the location is on the Mars prime meridian.
+LAMBDA = 0
+MST, LMST, LTST, LAMBDAs = c_mars_time(Ls, V_minus_M, JDTT, LAMBDA)
+print("Mean Solar Time at Mars's prime meridian (MST) = ", generate_time_string(MST))
+print("Local Mean Solar Time (LMST) = ", generate_time_string(LMST))
+print("Local True Solar Time (LTST) = ", generate_time_string(LTST))
 
 # Marstime from current earth time: 
 # a_days_since_j2000_epoch(time.time_ns() // 1_000_000)
