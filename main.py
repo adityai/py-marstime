@@ -136,7 +136,7 @@ def main(millis, LAMBDA):
     MST, LMST, LTST, LAMBDAs = c_mars_time(Ls, V_minus_M, JDTT, LAMBDA)
     print("Mean Solar Time at Mars's prime meridian (MST) = ", generate_time_string(MST))
     print("Local Mean Solar Time (LMST) = ", generate_time_string(LMST))
-    print("Local True Solar Time (LTST) = ", generate_time_string(LTST))
+    # print("Local True Solar Time (LTST) = ", generate_time_string(LTST))
 
 # Marstime from current earth time: 
 print("Mars time for current earth time at Mars prime meridian 0")
@@ -148,5 +148,22 @@ main(time.time_ns() // 1_000_000, 0)
 # main(947116800000, 0)
 
 # MER-A Spirit Landing
-# MER_A_LAMBDA_Spirit_Landing = 184.702
-# main(1073137591000, MER_A_LAMBDA_Spirit_Landing)
+MER_A_LAMBDA_Spirit_Landing = 184.702
+print("Mars time for MER-A Spirit landing")
+main(1073137591000, MER_A_LAMBDA_Spirit_Landing)
+
+# Perseverance 
+PERSEVERANCE_SOL_239_LAMBDA = 77.443
+print("Mars time for current earth time at Perseverance's location on Sol 239")
+main(time.time_ns() // 1_000_000, PERSEVERANCE_SOL_239_LAMBDA)
+
+# Curiosity
+CURIOSITY_SOL_3279_LAMBDA = 137.395
+print("Mars time for current earth time at Curiosity's location on Sol 3279")
+main(time.time_ns() // 1_000_000, CURIOSITY_SOL_3279_LAMBDA)
+
+# Insight Lander
+INSIGHT_LAMBDA = 135.6
+print("Mars time for current earth time at Insight Lander's location")
+main(time.time_ns() // 1_000_000, INSIGHT_LAMBDA)
+
