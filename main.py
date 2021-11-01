@@ -136,26 +136,28 @@ def main(millis, LAMBDA):
     MST, LMST, LTST, LAMBDAs = c_mars_time(Ls, V_minus_M, JDTT, LAMBDA)
     print("Mean Solar Time at Mars's prime meridian (MST) = ", generate_time_string(MST))
     print("Local Mean Solar Time (LMST) = ", generate_time_string(LMST))
-    # print("Local True Solar Time (LTST) = ", generate_time_string(LTST))
+    print("Local True Solar Time (LTST) = ", generate_time_string(LTST))
+    print("LAMBDAs = ", LAMBDAs)
+    print()
 
 # Marstime from current earth time: 
 print("Mars time for current earth time at Mars prime meridian 0")
 main(time.time_ns() // 1_000_000, 0)
 
-## lambda is the Mars latitude. 0 implies that the location is on the Mars prime meridian.
-# LAMBDA = 0
-## Near Coincident Earth and Mars Times
-# main(947116800000, 0)
+# lambda is the Mars latitude. 0 implies that the location is on the Mars prime meridian.
+LAMBDA = 0
+print("Reference data: Near Coincident Earth and Mars Times")
+main(947116800000, 0)
 
 # MER-A Spirit Landing
 MER_A_LAMBDA_Spirit_Landing = 184.702
-print("Mars time for MER-A Spirit landing")
+print("Reference data: Mars time for MER-A Spirit landing")
 main(1073137591000, MER_A_LAMBDA_Spirit_Landing)
 
-# Perseverance 
-PERSEVERANCE_SOL_239_LAMBDA = 77.443
-print("Mars time for current earth time at Perseverance's location on Sol 239")
-main(time.time_ns() // 1_000_000, PERSEVERANCE_SOL_239_LAMBDA)
+# # Perseverance 
+# PERSEVERANCE_SOL_239_LAMBDA = 77.443
+# print("Mars time for current earth time at Perseverance's location on Sol 239")
+# main(time.time_ns() // 1_000_000, PERSEVERANCE_SOL_239_LAMBDA)
 
 # Curiosity
 CURIOSITY_SOL_3279_LAMBDA = 137.395
