@@ -1,5 +1,6 @@
 import time
 import math
+import numpy
 
 DEBUG = None
 
@@ -108,6 +109,15 @@ def c_mars_time(Ls, V_minus_M, JDTT, LAMBDA):
 
     return MST, LMST, LTST, LAMBDAs
 
+def d_additional_calculations(Ls):
+    # D-1. Determine solar declination
+    # δs = arcsin {0.42565 sin Ls)} + 0.25° sin Ls
+    # Ds = math.asin(math.radians(0.42565 * math.sin(math.radians(Ls)))) + 0.25 * math.sin(math.radians(Ls))
+    Ds1 = 0.42565 * math.sin(math.radians(Ls))
+    Ds2 = math.asin(math.radians(Ds1))
+
+    print("Solar declination = ", Ds1, Ds2)
+
 def generate_time_string(decimal_time):
     hours = int(decimal_time)
     if DEBUG:
@@ -139,33 +149,34 @@ def main(millis, LAMBDA):
     print("Local True Solar Time (LTST) = ", generate_time_string(LTST))
     print("LAMBDAs = ", LAMBDAs)
     print()
+    d_additional_calculations(Ls)
 
-# Marstime from current earth time: 
-print("Mars time for current earth time at Mars prime meridian 0")
-main(time.time_ns() // 1_000_000, 0)
+# # Marstime from current earth time: 
+# print("Mars time for current earth time at Mars prime meridian 0")
+# main(time.time_ns() // 1_000_000, 0)
 
 # lambda is the Mars latitude. 0 implies that the location is on the Mars prime meridian.
 LAMBDA = 0
 print("Reference data: Near Coincident Earth and Mars Times")
 main(947116800000, 0)
 
-# MER-A Spirit Landing
-MER_A_LAMBDA_Spirit_Landing = 184.702
-print("Reference data: Mars time for MER-A Spirit landing")
-main(1073137591000, MER_A_LAMBDA_Spirit_Landing)
+# # MER-A Spirit Landing
+# MER_A_LAMBDA_Spirit_Landing = 184.702
+# print("Reference data: Mars time for MER-A Spirit landing")
+# main(1073137591000, MER_A_LAMBDA_Spirit_Landing)
 
-# # Perseverance 
-# PERSEVERANCE_SOL_239_LAMBDA = 77.443
-# print("Mars time for current earth time at Perseverance's location on Sol 239")
-# main(time.time_ns() // 1_000_000, PERSEVERANCE_SOL_239_LAMBDA)
+# # # Perseverance 
+# # PERSEVERANCE_SOL_239_LAMBDA = 77.443
+# # print("Mars time for current earth time at Perseverance's location on Sol 239")
+# # main(time.time_ns() // 1_000_000, PERSEVERANCE_SOL_239_LAMBDA)
 
-# Curiosity
-CURIOSITY_SOL_3279_LAMBDA = 137.395
-print("Mars time for current earth time at Curiosity's location on Sol 3279")
-main(time.time_ns() // 1_000_000, CURIOSITY_SOL_3279_LAMBDA)
+# # Curiosity
+# CURIOSITY_SOL_3279_LAMBDA = 137.395
+# print("Mars time for current earth time at Curiosity's location on Sol 3279")
+# main(time.time_ns() // 1_000_000, CURIOSITY_SOL_3279_LAMBDA)
 
-# Insight Lander
-INSIGHT_LAMBDA = 135.6
-print("Mars time for current earth time at Insight Lander's location")
-main(time.time_ns() // 1_000_000, INSIGHT_LAMBDA)
+# # Insight Lander
+# INSIGHT_LAMBDA = 135.6
+# print("Mars time for current earth time at Insight Lander's location")
+# main(time.time_ns() // 1_000_000, INSIGHT_LAMBDA)
 
