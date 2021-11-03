@@ -112,11 +112,9 @@ def c_mars_time(Ls, V_minus_M, JDTT, LAMBDA):
 def d_additional_calculations(Ls):
     # D-1. Determine solar declination
     # δs = arcsin {0.42565 sin Ls)} + 0.25° sin Ls
-    # Ds = math.asin(math.radians(0.42565 * math.sin(math.radians(Ls)))) + 0.25 * math.sin(math.radians(Ls))
-    Ds1 = 0.42565 * math.sin(math.radians(Ls))
-    Ds2 = math.asin(math.radians(Ds1))
+    Ds = math.degrees(math.asin(0.42565 * math.sin(math.radians(Ls)))) + 0.25 * math.sin(math.radians(Ls))
 
-    print("Solar declination = ", Ds1, Ds2)
+    print("D-1 Solar declination = ", Ds)
 
 def generate_time_string(decimal_time):
     hours = int(decimal_time)
