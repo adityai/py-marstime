@@ -109,17 +109,42 @@ def c_mars_time(Ls, V_minus_M, JDTT, LAMBDA):
 
     return MST, LMST, LTST, LAMBDAs
 
-def d_additional_calculations(Ls, M):
+def d_additional_calculations(Ls, M, DELTA_T_J2000, LAMBDA, LAMBDAs, planetographicLatidude):
     # D-1. Determine solar declination
     # δs = arcsin {0.42565 sin Ls)} + 0.25° sin Ls
     Ds = math.degrees(math.asin(0.42565 * math.sin(math.radians(Ls)))) + 0.25 * math.sin(math.radians(Ls))
     if DEBUG:
         print("D-1 Solar declination δs = ", Ds)
 
-    # D-2. Determine heliocentric distance. (AM2000, eq. 25, corrected)
+    # D-2. Determine heliocentric distance
     # RM = 1.52367934 × (1.00436 - 0.09309 cos M - 0.004336 cos 2M - 0.00031 cos 3M - 0.00003 cos 4M)
     Rm = 1.52367934 * (1.00436 - 0.09309 * math.cos(math.radians(M)) - 0.004336 * math.cos(2 * math.radians(M)) - 0.00031 * math.cos(3 * math.radians(M)) - 0.00003 * math.cos(4 * math.radians(M)))
-    print("D-2. Determine heliocentric distance Rm = ", Rm)
+    if DEBUG:
+        print("D-2. Determine heliocentric distance Rm = ", Rm, " AU")
+
+    #D-3. Determine heliocentric longitude
+    #lM = Ls + 85.061° - 0.015° sin (71° + 2Ls) - 5.5°×10-6 ΔtJ2000
+    lM = Ls + 85.061 - 0.015 * math.sin(math.radians(71 + 2 * Ls)) - 5.5 * 10 ** -6 * DELTA_T_J2000
+    if lM > 360:
+        lM = lM -360
+    if DEBUG:
+        print("D-3 Determine heliocentric longitude lM = ", lM)
+    
+    # D-4 Determine heliocentric latitude.
+    # bM = -(1.8497° - 2.23°×10-5 ΔtJ2000) sin (Ls - 144.50° + 2.57°×10-6 ΔtJ2000)
+    bM = -1 * (1.8497 - 2.23 * 10**-5 * DELTA_T_J2000) * math.sin(math.radians(Ls - 144.50 + 2.57 * 10**-6 * DELTA_T_J2000))
+    if DEBUG:
+        print("D-4 Determine heliocentric latitude bM = ", bM)
+
+    # D-5. Determine local solar elevation
+    # For any given point on Mars's surface, we want to determine the angle of the sun. The zenith angle is:
+    # Z = arccos (sin δs sin φ + cos δs cos φ cos H)
+    # where φ is the planetographic latitude, Λ is the planetographic longitude, and H the hour angle, Λ - Λs.
+    # The solar elevation is simply 90° - Z.
+    H = LAMBDA - LAMBDAs
+    Z = math.acos(math.sin(math.radians(Ds)) * math.sin(math.radians(planetographicLatidude)) + math.cos(math.radians(Ds)) * math.cos(math.radians(planetographicLatidude)) * math.cos(math.radians(H)))
+    print("D-5 Determine local solar elevation Z = ", Z)
+
 
 def generate_time_string(decimal_time):
     hours = int(decimal_time)
@@ -152,7 +177,8 @@ def main(millis, LAMBDA):
     print("Local True Solar Time (LTST) = ", generate_time_string(LTST))
     print("LAMBDAs = ", LAMBDAs)
     print()
-    d_additional_calculations(Ls, M)
+    planetographicLatidude = 0
+    d_additional_calculations(Ls, M, DELTA_T_J2000, LAMBDA, LAMBDAs, planetographicLatidude)
 
 # # Marstime from current earth time: 
 # print("Mars time for current earth time at Mars prime meridian 0")
