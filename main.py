@@ -142,7 +142,11 @@ def d_additional_calculations(Ls, M, DELTA_T_J2000, LAMBDA, LAMBDAs, planetograp
     # where φ is the planetographic latitude, Λ is the planetographic longitude, and H the hour angle, Λ - Λs.
     # The solar elevation is simply 90° - Z.
     H = LAMBDA - LAMBDAs
-    Z = math.acos(math.sin(math.radians(Ds)) * math.sin(math.radians(planetographicLatidude)) + math.cos(math.radians(Ds)) * math.cos(math.radians(planetographicLatidude)) * math.cos(math.radians(H)))
+    Z = math.degrees(math.acos(
+        math.sin(math.radians(Ds)) *
+        math.sin(math.radians(planetographicLatidude)) +
+        math.cos(math.radians(Ds)) *
+        math.cos(math.radians(planetographicLatidude)) * math.cos(math.radians(H))))
     print("D-5 Determine local solar elevation Z = ", Z)
 
 
