@@ -147,8 +147,21 @@ def d_additional_calculations(Ls, M, DELTA_T_J2000, LAMBDA, LAMBDAs, planetograp
         math.sin(math.radians(planetographicLatidude)) +
         math.cos(math.radians(Ds)) *
         math.cos(math.radians(planetographicLatidude)) * math.cos(math.radians(H))))
-    print("D-5 Determine local solar elevation Z = ", Z)
+    if DEBUG:
+        print("D-5 Determine local solar elevation Z = ", Z)
 
+    # D-6. Determine local solar azimuth
+    # The second element of the sun's location as seen from a point on Mars's surface is its azimuth, i.e., compass angle relative to due north.
+    # A = arctan (sin H / (cos φ tan δs - sin φ cos H))
+    # (Note: When applying this equation in your computer code or spreadsheet, use the atan2 function so that the correct quadrant is obtained.)
+    A = 360 - math.degrees(
+    math.atan2(
+        math.sin(math.radians(H)) /
+        ((math.cos(math.radians(planetographicLatidude)) *
+          math.tan(math.radians(Ds)) - (math.sin(
+              math.radians(planetographicLatidude) *
+              math.cos(math.radians(H)))))), -1))
+    print("D-6 Determine local solar azimuth A = ", A)
 
 def generate_time_string(decimal_time):
     hours = int(decimal_time)
